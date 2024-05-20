@@ -23,12 +23,12 @@ const httpUsuarios = {
         res.json({ usuario })
     },
     getUsuariosactivados: async (req, res) => {
-        const activados = await Usuario.find(estado == 1)
+        const activados = await Usuario.find({ estado: 1 })
         res.json({ activados })
     },
 
     getUsuariosdesactivados: async (req, res) => {
-        const desactivados = await Usuario.find(estado == 0)
+        const desactivados = await Usuario.find({estado: 0})
         res.json({ desactivados })
     },
 
