@@ -1,3 +1,4 @@
+import { generarJWT } from "../middlewares/validar-jwt.js"
 import sedes from "../models/sedes.js"
 import Usuario from "../models/usuarios.js"
 import bcryptjs from "bcryptjs"
@@ -18,10 +19,17 @@ const httpUsuarios = {
     },
 
     getUsuariosID: async (req, res) => {
-        const { id } = req.params
-        const usuario = await Usuario.findById(id)
-        res.json({ usuario })
+        const { id } = req.params;
+        try {
+            const usuario = await Usuario.findById(id).populate('idSede');
+            res.json({ usuario });
+        } catch (error) {
+            console.error("Error fetching usuario by ID:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     },
+
+
     getUsuariosactivados: async (req, res) => {
         const activados = await Usuario.find({ estado: 1 })
         res.json({ activados })
@@ -34,9 +42,9 @@ const httpUsuarios = {
 
     postUsuarios: async (req, res) => {
         try {
-        const {id, nombre,email,telefono, idSede ,password,rol, estado} = req.body
+        const { nombre,email,telefono, idSede ,password,rol, estado} = req.body
         console.log(idSede," ",nombre);
-        const usuario = new Usuario({id, nombre,email,telefono, idSede, password,rol, estado})
+        const usuario = new Usuario({ nombre,email,telefono, idSede, password,rol, estado})
         await usuario.save()
         res.json({ usuario })
     }catch (error) {
@@ -88,7 +96,7 @@ const httpUsuarios = {
                 });
             }
     
-            if (user.estado == 0) {
+            if (user.estado === 0) {
                 console.log('User is inactive');
                 return res.status(401).json({
                     msg: "usuario o contraseña incorrecto11"
@@ -103,14 +111,9 @@ const httpUsuarios = {
                 });
             }
     
-            const token = jwt.sign({
-                id: Usuario.id,
-                nombre: Usuario.nombre,
-                email: Usuario.email,
-                rol: Usuario.rol 
-            }, process.env.SECRETORPRIVATEKEY, {expiresIn: '4h'});
+             const token = await generarJWT(user._id)
             res.json({
-                user,
+                usuario: user,
                 token
             });
         } catch (error) {

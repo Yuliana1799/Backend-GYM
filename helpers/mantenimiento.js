@@ -3,8 +3,8 @@ import Maquina from "../models/maquinas.js"
 
 
 const helpersMantenimiento={
-    validarIdMaquina:async (idMantenimiento)=>{
-        const existe = await Maquina.findById(idMantenimiento)
+    validarIdMaquina:async (idMaquina)=>{
+        const existe = await Maquina.findById(idMaquina)
         if (existe==undefined){
             throw new Error ("Id no existe")
         }

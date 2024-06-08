@@ -8,6 +8,6 @@ estado:{type:Number,default:1},
 
 })
 
-export default mongoose.model("Plan", planesSchema)
+export default mongoose.model("Plan", planesSchema)  
 
 

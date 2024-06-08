@@ -33,14 +33,14 @@ const httpPlanes = {
     },
 
     getPlanesactivados: async (req, res) => {
-        const activados = await Cliente.find(estado == 1)
+        const activados = await Plan.find({estado: 1})
         res.json({ activados })
     },
 
     getPlanesdesactivados: async (req, res) => {
-        const desactivados = await Cliente.find(estado == 0)
+        const desactivados = await Plan.find({estado: 0})
         res.json({ desactivados })
-    },
+    }, 
 
     putPlanes: async (req, res) => {
         const { id } = req.params

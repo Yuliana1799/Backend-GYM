@@ -3,12 +3,18 @@ import httpMaquinas from '../controllers/maquinas.js'
 import { check } from 'express-validator'
 import { validarCampos } from '../middlewares/validar-campos.js'
 import helpersMaquinas from '../helpers/maquinas.js'
+import { validarJWT } from '../middlewares/validar-jwt.js'
 
 const router=Router()
 
-router.get("/listar",httpMaquinas.getMaquinas)
+router.get("/listar",[
+  // validarJWT,
+],httpMaquinas.getMaquinas)
 
 router.get("/listarid/:id",httpMaquinas.getMaquinasID)
+
+router.get("/listaractivados",httpMaquinas.getMaquinasactivados)
+router.get("/listardesactivados",httpMaquinas.getMaquinasdesactivados)
 
 router.post("/escribir",[
   check('idSede','Se necesita un mongoId valido').isMongoId(),
@@ -33,7 +39,7 @@ router.put("/activar/activos/:id",[
   validarCampos
 ],httpMaquinas.putMaquinasActivar)
 
-router.put("/desactivar/desactivos/:id",[
+router.put("/desactivar/desactivados/:id",[
   check('id','Se necesita un mongoid valido').isMongoId(),
   check('id').custom(helpersMaquinas.validarIdMaquina),
   validarCampos

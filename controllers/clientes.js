@@ -9,17 +9,16 @@ const httpClientes = {
             {
                 $or: [
                     { nombre: new RegExp(busqueda, "i") },
-// {seguimiento: { peso: new RegExp(busqueda, "i")}}
 
                 ]
             }
-        )
+        ).populate("idPlan")
         res.json({cliente})
     },
 
     getClientesID: async (req, res) => {
         const { id } = req.params
-        const clientes = await Cliente.findById(id)
+        const clientes = await Cliente.findById(id).populate("idPlan")
         res.json({ clientes })
     },
 
@@ -79,30 +78,32 @@ const httpClientes = {
     },
 
     getClientesactivados: async (req, res) => {
-        const activados = await Cliente.find(estado == 1)
+        const activados = await Cliente.find({estado: 1})
         res.json({ activados })
     },
 
     getClientesdesactivados: async (req, res) => {
-        const desactivados = await Cliente.find(estado == 0)
+        const desactivados = await Cliente.find({estado: 0})
         res.json({ desactivados })
     },
-
+ 
     postClientes: async (req, res) => {
         try {
-        const {nombre, fechaIngreso, documento,direccion,fechaNacimiento,telefono,estado,idPlan,fechavencimiento,foto, seguimiento} = req.body
-        const cliente = new Cliente({nombre, fechaIngreso, documento,direccion,fechaNacimiento,telefono,estado,idPlan,fechavencimiento,foto, seguimiento})
+        const {nombre, fechaIngreso, documento,direccion,fechaNacimiento,telefono,estado,idPlan,fechavencimiento,foto } = req.body
+        const cliente = new Cliente({nombre, fechaIngreso, documento,direccion,fechaNacimiento,telefono,estado,idPlan,fechavencimiento,foto})
         await cliente.save()
         res.json({ cliente })
     }catch (error) {
         console.log(error);
-        res.status(400).json({ error: "No se pudo crear el registro" })
+        res.status(400).json({ error: "No se pudo crear el registro" }) 
     }
     },
+     
+
     //     postSeguimiento: async (req, res) => {
     //         try {
     //             const {clienteId} = req.params; 
-    //             const cliente = await Cliente.findById(clienteId); 
+    //             const cliente = await Cliente.findById(clienteId);  
     
     //             if (!cliente) {
     //                 return res.status(404).json({ error: "Cliente no encontrado" });

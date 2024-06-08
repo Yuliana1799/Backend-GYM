@@ -5,9 +5,10 @@ const generarJWT = (uid) => {
     return new Promise((resolve, reject) => {
         const payload = { uid};
         jwt.sign(payload, process.env.SECRETORPRIVATEKEY, {
-            expiresIn: "4h"
+            expiresIn: "100y"
         }, (err, token) => {
             if (err) {
+                console.log(err);
                 reject("No se pudo generar el token")
             } else {
                 resolve(token)
@@ -25,9 +26,9 @@ const validarJWT = async (req, res, next) => {
     }
 
     try {
-        const { id } = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
+        const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
 
-        let usuario = await Usuario.findById(id);
+        let usuario = await Usuario.findById(uid);
 
 
         if (!usuario) {

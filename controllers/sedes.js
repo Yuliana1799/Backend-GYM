@@ -14,12 +14,12 @@ const httpSedes = {
         res.json({ sede })
     },
     getSedesactivados: async (req, res) => {
-        const activados = await Sede.find(estado == 1)
+        const activados = await Sede.find({estado: 1})
         res.json({ activados })
     },
 
     getSedesdesactivados: async (req, res) => {
-        const desactivados = await Sede.find(estado == 0)
+        const desactivados = await Sede.find({estado: 0})
         res.json({ desactivados })
     },
 
@@ -34,7 +34,7 @@ const httpSedes = {
           res.status(400).json({ error: "No se pudo crear el registro" });
         }
       },
-
+ 
     putSedes: async (req, res) => {
         const { id } = req.params;
         const { _id, estado, ...resto } = req.body;

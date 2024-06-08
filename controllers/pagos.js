@@ -4,30 +4,30 @@ const httpPagos = {
 
     getPagos: async (req, res) => {
         const {busqueda} = req.query
-        const pago = await Pago.find()
+        const pago = await Pago.find().populate("idCliente, IdPlan")
         res.json({pago})
     },
 
     getPagosactivados: async (req, res) => {
-        const activados = await Pago.find(estado == 1)
+        const activados = await Pago.find({estado: 1})
         res.json({ activados })
     },
 
     getPagosdesactivados: async (req, res) => {
-        const desactivados = await Pago.find(estado == 0)
+        const desactivados = await Pago.find({estado: 0})
         res.json({ desactivados })
     },
 
     getPagosID: async (req, res) => {
         const { id } = req.params
-        const pago = await Pago.findById(id)
+        const pago = await Pago.findById(id).populate("idCliente, IdPlan")
         res.json({ pago })
     },
 
     postPagos: async (req, res) => {
         try {
-        const {id,plan,fecha,valor, estado} = req.body
-        const pago = new Pago({id,plan,fecha,valor, estado})
+        const {idCliente, IdPlan,fecha,valor,estado} = req.body
+        const pago = new Pago({idCliente,IdPlan,fecha,valor, estado})
         await pago.save()
         res.json({ pago })
     }catch (error) {

@@ -10,16 +10,25 @@ const httpMaquinas = {
                     { descripcion: new RegExp(busqueda, "i") },
                 ]
             }
-        )
+        ).populate("idSede")
         res.json({maquina})
     },
 
     getMaquinasID: async (req, res) => {
         const { id } = req.params
-        const maquina = await Maquina.findById(id)
+        const maquina = await Maquina.findById(id).populate('idSede')
         res.json({ maquina })
     },
 
+    getMaquinasactivados: async (req, res) => {
+        const activados = await Maquina.find({estado: 1})
+        res.json({ activados })
+    },
+
+    getMaquinasdesactivados: async (req, res) => {
+        const desactivados = await Maquina.find({estado: 0})
+        res.json({ desactivados })
+    },
     postMaquinas: async (req, res) => {
         try {
         const {idSede,codigo,descripcion,estado} = req.body
@@ -45,6 +54,8 @@ const httpMaquinas = {
         const maquina = await Maquina.findByIdAndUpdate(id, { estado: 1 }, { new: true })
         res.json({ maquina})
     },
+
+   
 
     putMaquinasDesactivar: async (req, res) => {
         const { id } = req.params

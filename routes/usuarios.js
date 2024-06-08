@@ -7,11 +7,18 @@ import {validarJWT} from '../middlewares/validar-jwt.js'
 
 const router=Router()
 
+// router.get("/listar", [validarJWT],httpUsuarios.getUsuarios)
 router.get("/listar",httpUsuarios.getUsuarios)
 
+
 router.get("/listarid/:id",httpUsuarios.getUsuariosID)
-router.get("/listaractivados",httpUsuarios.getUsuariosactivados)
-router.get("/listardesactivados",httpUsuarios.getUsuariosdesactivados)
+router.get("/listaractivados", 
+// [validarJWT],
+ httpUsuarios.getUsuariosactivados)
+router.get("/listardesactivados", 
+//  [validarJWT],
+  httpUsuarios.getUsuariosdesactivados) 
+
 
 
 router.post("/escribir",[
@@ -28,7 +35,8 @@ router.post("/escribir",[
 
 router.post("/login",[
   check('email','El email debe estar bien escrito.').isEmail(),
-  check('email').custom(helpersUsuarios.Noexisteelcorreo),
+  check("password", "Se necesita una contraseña valido").notEmpty(),
+  // check('email').custom(helpersUsuarios.Noexisteelcorreo),
 ],httpUsuarios.login
 )
 

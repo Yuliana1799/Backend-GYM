@@ -1,72 +1,56 @@
-import Venta from "../models/ventas.js"
-import Inventario from "../models/inventario.js"
 
 
+import Venta from "../models/ventas.js";
+import Inventario from "../models/inventario.js";
+import helpersVentas from "../helpers/ventas.js"; 
 const httpVentas = {
-
     getVentas: async (req, res) => {
-        const {busqueda} = req.query
-        const venta = await Venta.find()
-        .populate("idProducto")
-        res.json({venta})
+        const { busqueda } = req.query;
+        const venta = await Venta.find().populate("idProducto");
+        res.json({ venta });
     },
 
     getVentasID: async (req, res) => {
-        const { id } = req.params
-        const venta = await Venta.findById(id)
-        res.json({ venta })
+        const { id } = req.params;
+        const venta = await Venta.findById(id).populate("idProducto");
+        res.json({ venta });
     },
 
-    // postVentas: async (req, res) => {
-    //     try {
-    //       const { IdInventario, codigo, valorUnitario, cantidad } = req.body;
-    //       const total = valorUnitario * cantidad; 
-      
-    //       const venta = new Cliente({ IdInventario, codigo, valorUnitario, cantidad, total });
-    //       await venta.save();
-    //       res.json({ venta });
-    //     } catch (error) {
-    //       res.status(400).json({ error: "No se pudo crear el registro" });
-    //     }
-    //   },
-
-    postVentas: async (req, res) => {;
+    postVentas: async (req, res) => {
         try {
-          const { id, valorUnitario, idProducto, cantidad } = req.body;
-          const total = valorUnitario * cantidad;
-      
-          const venta = new Venta({ id, valorUnitario, idProducto, cantidad, total });
-          await venta.save();
-      
-          const inventario = await Inventario.findById(id);
-          inventario.cantidad -= cantidad;
-          await inventario.save();
-      
-          res.json({ venta });
-        } catch (error) {
-          console.log(error);
-          
-          res.status(400).json({ error: error.message || "No se pudo crear el registro" });
-        }
-      },
+            const { valorUnitario, idProducto, cantidad } = req.body;
 
-      putVentas: async (req, res) => {
-        console.log("ID de la venta recibido en el backend:", id);
-        console.log("Datos recibidos en el backend:", res);
+           
+            await helpersVentas.validarIdInventario(idProducto);
+            await helpersVentas.validarCantidadDisponible(idProducto, cantidad);
+
+            const total = valorUnitario * cantidad;
+            const venta = new Venta({ valorUnitario, idProducto, cantidad, total });
+            await venta.save();
+
+            const inventario = await Inventario.findById(idProducto);
+            inventario.cantidad -= cantidad;
+            await inventario.save();
+
+            res.json({ venta });
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({ error: error.message || "No se pudo crear el registro" });
+        }
+    },
+
+    putVentas: async (req, res) => {
         try {
-          const { id } = req.params;
-          console.log("id ",id);
+            const { id } = req.params;
+            const { ...resto } = req.body;
 
-          const { ...resto } = req.body;
-          console.log("resto",resto);
-
-    
-          const venta = await Venta.findByIdAndUpdate(id, resto, { new: true });
-          res.json({ venta });
+            const venta = await Venta.findByIdAndUpdate(id, resto, { new: true });
+            res.json({ venta });
         } catch (error) {
-          console.error("Error updating ventas:", error);
-          res.status(400).json({ error: error.message || "No se pudo actualizar la venta" });
+            console.error("Error updating ventas:", error);
+            res.status(400).json({ error: error.message || "No se pudo actualizar la venta" });
         }
-      },
-    };
-export default httpVentas
+    },
+};
+
+export default httpVentas;

@@ -10,20 +10,20 @@ const httpMantenimiento = {
                     { descripcion: new RegExp(busqueda, "i") },
                 ]
             }
-        )
+        ).populate("idMaquina")
         res.json({mantenimiento})
     },
 
 getMantenimientoID: async (req, res) => {
         const { id } = req.params
-        const mantenimiento = await Mantenimiento.findById(id)
+        const mantenimiento = await Mantenimiento.findById(id).populate("idMaquina")
         res.json({ mantenimiento })
     },
 
     postMantenimiento: async (req, res) => {
         try {
-        const {idMantenimiento,fecha,descripcion,responsable,valor} = req.body
-        const mantenimiento = new Mantenimiento({idMantenimiento,fecha,descripcion,responsable,valor})
+        const {idMaquina,fecha,descripcion,responsable,valor} = req.body
+        const mantenimiento = new Mantenimiento({idMaquina,fecha,descripcion,responsable,valor})
         await mantenimiento.save()
         res.json({ mantenimiento })
     }catch (error) {

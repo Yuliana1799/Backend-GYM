@@ -3,11 +3,15 @@ import httpClientes from '../controllers/clientes.js'
 import { check } from 'express-validator'
 import { validarCampos } from '../middlewares/validar-campos.js'
 import helpersClientes from '../helpers/clientes.js'
+import { validarJWT } from '../middlewares/validar-jwt.js'
 
 const router=Router()
 
 
-router.get("/listar",httpClientes.getClientes)
+router.get("/listar",[
+  // validarJWT,
+],
+httpClientes.getClientes)
 router.get("/listarid/:id",httpClientes.getClientesID)
 router.get("/seguimiento",httpClientes.getSeguimientoCliente)
 router.get("/porplan",httpClientes.getClientesPorPlan)
@@ -22,17 +26,17 @@ router.post("/escribir",[
     check('idPlan','Se necesita un mongoid valido').isMongoId(),
     check('idPlan').custom(helpersClientes.validaridPlan),
     check('telefono', 'minimo 9 caracteres.').isLength({min:9}),
-    check('telefono', 'en digitos.').isNumeric().notEmpty(),
-    validarCampos
+    check('telefono', 'en digitos.').isNumeric().notEmpty(), 
+    validarCampos 
 ],httpClientes.postClientes)
 
-// router.post("/escribir/seguimiento/:id",[
+// router.post("/escribir/seguimiento/:id",[ 
 //   check('id','Se necesita un mongoid valido').isMongoId(),
 //   check('id').custom(helpersClientes.validarExistaIdcliente),
 //   check('peso', 'en digitos.').isNumeric().notEmpty(),
 //   check('imc', 'en digitos.').isNumeric().notEmpty(),
 //   check('brazo', 'en digitos.').isNumeric().notEmpty(),
-//   check('pierna', 'en digitos.').isNumeric().notEmpty(),
+//   check('pierna', 'en digitos.').isNumeric().notEmpty(), 
 //   check('edad', 'en digitos.').isNumeric().notEmpty(),
 //   validarCampos
 // ],httpClientes.postSeguimiento)
@@ -55,7 +59,7 @@ router.put("/modificar/seguimiento/:id",[
   // check('pierna', 'en digitos.').isNumeric().notEmpty(),
   // check('edad', 'en digitos.').isNumeric().notEmpty(),
   validarCampos
-],httpClientes.putClienteSeguimiento)
+],httpClientes.putClienteSeguimiento) 
 
 
 
@@ -65,7 +69,7 @@ router.put("/activar/activados/:id",[
     validarCampos
   ],httpClientes.putClientesActivar)
   
-  router.put("/desactivar/desactivados/:id",[
+  router.put("/desactivar/desactivados/:id",[ 
     check('id','Se necesita un mongoid valido').isMongoId(),
     check('id').custom(helpersClientes.validarExistaIdcliente),
     validarCampos
@@ -75,3 +79,4 @@ router.put("/activar/activados/:id",[
 
 
 export default router
+

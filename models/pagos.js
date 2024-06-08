@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const pagosSchema=new mongoose.Schema({
-  id:{type:mongoose.Schema.Types.ObjectId,ref:'Cliente',required:true},
-  plan:{type:String,required:true},
+  idCliente:{type:mongoose.Schema.Types.ObjectId,ref:'Cliente',required:true},
+  IdPlan:{type:mongoose.Schema.Types.ObjectId,ref:'Plan',required:true},
   fecha:{type:Date,default:Date.now()},
-  valor:{ type: Number, require: true },
+  valor:{ type: Number, ref:'Plan',required:true },
   estado:{type:Number,default:1},
 
 })
