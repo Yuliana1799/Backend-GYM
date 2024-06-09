@@ -4,7 +4,7 @@ const httpPagos = {
 
     getPagos: async (req, res) => {
         const {busqueda} = req.query
-        const pago = await Pago.find().populate("idCliente, IdPlan")
+        const pago = await Pago.find().populate("idCliente").populate("IdPlan")
         res.json({pago})
     },
 
@@ -20,7 +20,7 @@ const httpPagos = {
 
     getPagosID: async (req, res) => {
         const { id } = req.params
-        const pago = await Pago.findById(id).populate("idCliente, IdPlan")
+        const pago = await Pago.findById(id).populate("idCliente").populate("IdPlan")
         res.json({ pago })
     },
 

@@ -9,7 +9,6 @@ const clientesSchema = new mongoose.Schema({
   telefono: { type: String, required: true},
   estado: { type: Number, default: 1 },
   idPlan:{type:mongoose.Schema.Types.ObjectId,ref:'Plan',required:true},
-  fechavencimiento: { type: Date, default: Date.now()},
   foto: { type: String, required: true },
   seguimiento: [
 

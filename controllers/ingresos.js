@@ -3,13 +3,13 @@ import Ingreso from "../models/ingresos.js"
 const httpIngresos = {
 
     getIngresos: async (req, res) => {
-        const ingreso = await Ingreso.find()
+        const ingreso = await Ingreso.find().populate("idCliente").populate("idSede")
         res.json({ingreso})
     },
 
     getIngresosID: async (req, res) => {
         const { id } = req.params
-        const ingresos = await Ingreso.findById(id)
+        const ingresos = await Ingreso.findById(id).populate("idCliente").populate("idSede")
         res.json({ ingresos })
     },
 
