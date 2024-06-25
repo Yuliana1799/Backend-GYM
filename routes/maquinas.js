@@ -6,7 +6,7 @@ import helpersMaquinas from '../helpers/maquinas.js'
 import { validarJWT } from '../middlewares/validar-jwt.js'
 
 const router=Router()
-
+// router.get("/listar", [validarJWT],httpMaquinas.getMaquinas)
 router.get("/listar",[
   // validarJWT,
 ],httpMaquinas.getMaquinas)

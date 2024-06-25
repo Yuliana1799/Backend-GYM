@@ -8,9 +8,9 @@ import helpersVentas from '../helpers/ventas.js';
 import { validarJWT } from '../middlewares/validar-jwt.js'
 
 const router = Router();
-
+// router.get("/listar", [validarJWT],httpVentas.getVentas)
 router.get("/listar",[
-    // validarJWT,
+    validarJWT,
   ], httpVentas.getVentas);
 
 router.get("/listarid/:id", httpVentas.getVentasID);

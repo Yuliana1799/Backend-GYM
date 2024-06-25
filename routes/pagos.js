@@ -6,7 +6,7 @@ import helpersPagos from '../helpers/pagos.js'
 import { validarJWT } from '../middlewares/validar-jwt.js'
 
 const router=Router()
-
+// router.get("/listar", [validarJWT],httpPagos.getPagos)
 router.get("/listar",[
   // validarJWT,
 ],httpPagos.getPagos)
@@ -28,7 +28,6 @@ router.post("/escribir",[
 router.put("/modificar/:id",[
   check('id','Se necesita un mongoid valido').isMongoId(),
   check('id').custom(helpersPagos.validarIdPago),
-  check('plan', 'en digitos.').isNumeric(),
   validarCampos
 ],httpPagos.putPagos)
 

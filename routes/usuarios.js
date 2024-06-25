@@ -31,13 +31,17 @@ router.post("/escribir",[
     check('rol','debe especificar un rol').isString(),
     check('password', 'La contraseña debe contener al menos tres letras y tres números').custom(helpersUsuarios.validarPassword),
     validarCampos
-],httpUsuarios.postUsuarios)
+], 
+// [validarJWT],
+httpUsuarios.postUsuarios)
 
 router.post("/login",[
   check('email','El email debe estar bien escrito.').isEmail(),
   check("password", "Se necesita una contraseña valido").notEmpty(),
   // check('email').custom(helpersUsuarios.Noexisteelcorreo),
-],httpUsuarios.login
+],
+// [validarJWT],
+httpUsuarios.login
 )
 
 router.put("/modificar/:id",[
@@ -50,25 +54,33 @@ router.put("/modificar/:id",[
   // check('password', 'Debe tener al menos 8 caracteres con al menos dos numeros incluidos.')
   //     .isStrongPassword({ minLength: 8, minNumbers: 2 }),
   validarCampos
-],httpUsuarios.putUsuarios)
+],  
+// [validarJWT],
+httpUsuarios.putUsuarios)
 
 router.put("/password/porid/:id",[
   check('id','Se necesita un mongoid valido').isMongoId(),
   check('id').custom(helpersUsuarios.validarIdUsuario),
   validarCampos
-],httpUsuarios.putUsuariospassword)
+],
+// [validarJWT],
+httpUsuarios.putUsuariospassword)
 
 router.put("/activar/activos/:id",[
   check('id','Se necesita un mongoid valido').isMongoId(),
   check('id').custom(helpersUsuarios.validarIdUsuario),
   validarCampos
-],httpUsuarios.putUsuariosActivar)
+],
+// [validarJWT],
+httpUsuarios.putUsuariosActivar)
 
 router.put("/desactivar/desactivados/:id",[
   check('id','Se necesita un mongoid valido').isMongoId(),
   check('id').custom(helpersUsuarios.validarIdUsuario),
   validarCampos
-],httpUsuarios.putUsuariosDesactivar)
+],  
+// [validarJWT],
+httpUsuarios.putUsuariosDesactivar)
  
 
 export default router

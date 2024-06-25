@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import Usuario from "../models/usuarios.js";
 
-const generarJWT = (uid) => {
+const generarJWT = (uid, rol) => {
     return new Promise((resolve, reject) => {
-        const payload = { uid};
+        const payload = { uid, rol};
         jwt.sign(payload, process.env.SECRETORPRIVATEKEY, {
             expiresIn: "100y"
         }, (err, token) => {
@@ -55,6 +55,7 @@ const validarJWT = async (req, res, next) => {
         })
     }
 }
+
 
 
 export { generarJWT, validarJWT }

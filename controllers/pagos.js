@@ -31,7 +31,7 @@ const httpPagos = {
         await pago.save()
         res.json({ pago })
     }catch (error) {
-        res.status(400).json({ error: "No se pudo crear el registro" })
+        res.status(400).json({ error: error})
     }
     },
 

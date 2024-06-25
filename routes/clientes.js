@@ -7,9 +7,8 @@ import { validarJWT } from '../middlewares/validar-jwt.js'
 
 const router=Router()
 
-
+// router.get("/listar", [validarJWT],httpClientes.getClientes)
 router.get("/listar",[
-  // validarJWT,
 ],
 httpClientes.getClientes)
 router.get("/listarid/:id",httpClientes.getClientesID)

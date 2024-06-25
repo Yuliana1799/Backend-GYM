@@ -6,7 +6,7 @@ import helpersPlanes from '../helpers/planes.js'
 import { validarJWT } from '../middlewares/validar-jwt.js'
 
 const router=Router()
-
+// router.get("/listar", [validarJWT],httpPlanes.getPlanes)
 router.get("/listar",[
   // validarJWT,
 ],httpPlanes.getPlanes)

@@ -6,9 +6,9 @@ import helpersIngresos from '../helpers/ingresos.js'
 import { validarJWT } from '../middlewares/validar-jwt.js'
 
 const router=Router()
+// router.get("/listar", [validarJWT],httpIngresos.getIngresosID)
 
 router.get("/listar",[
-    // validarJWT,
 ],httpIngresos.getIngresos)
 
 router.get("/listarid/:id",httpIngresos.getIngresosID)
