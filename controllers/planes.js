@@ -1,5 +1,15 @@
 import Plan from "../models/planes.js"
+import ContadorP from "../models/contadorp.js";
 
+const obtenerSiguienteCodigo = async () => {
+  const nombreContador = 'ventas';
+  const contadorp = await ContadorP.findOneAndUpdate(
+    { nombre: nombreContador },
+    { $inc: { valor: 1 } },
+    { new: true, upsert: true }
+  );
+  return contadorp.valor;
+};
 const httpPlanes = {
 
     getPlanes: async (req, res) => {
@@ -23,7 +33,9 @@ const httpPlanes = {
     postPlanes: async (req, res) => {
         try {
         const {descripcion,valor,dias,estado} = req.body
-        const plan = new Plan({descripcion,valor,dias,estado})
+        const codigo = await obtenerSiguienteCodigo();
+
+        const plan = new Plan({descripcion,valor,dias,estado, codigo})
         await plan.save()
         res.json({ plan })
     }catch (error) {
@@ -33,14 +45,24 @@ const httpPlanes = {
     },
 
     getPlanesactivados: async (req, res) => {
-        const activados = await Plan.find({estado: 1})
-        res.json({ activados })
+        try {
+            const activados = await Plan.find({ estado: 1 });
+            res.json({ activados });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error al obtener planes activados' });
+        }
     },
 
     getPlanesdesactivados: async (req, res) => {
-        const desactivados = await Plan.find({estado: 0})
+        try {
+        const desactivados = await Plan.find({ estado: 0 })
         res.json({ desactivados })
-    }, 
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener planes desactivados' });
+    }
+    },
 
     putPlanes: async (req, res) => {
         const { id } = req.params
@@ -52,15 +74,31 @@ const httpPlanes = {
     },
 
     putPlanesActivar: async (req, res) => {
-        const { id } = req.params
-        const plan = await Plan.findByIdAndUpdate(id, { estado: 1 }, { new: true })
-        res.json({ plan })
+        const { id } = req.params;
+        try {
+            const plan = await Plan.findByIdAndUpdate(id, { estado: 1 }, { new: true });
+            if (!plan) {
+                return res.status(404).json({ error: "plan no encontrado" });
+            }
+            res.json({ plan });
+        } catch (error) {
+            console.error("Error al activar plan", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     },
 
     putPlanesDesactivar: async (req, res) => {
-        const { id } = req.params
-        const plan = await Plan.findByIdAndUpdate(id, { estado: 0 }, { new: true })
-        res.json({ plan })
-    }
+        const { id } = req.params;
+        try {
+            const plan = await Plan.findByIdAndUpdate(id, { estado: 0 }, { new: true });
+            if (!plan) {
+                return res.status(404).json({ error: "plan no encontrado" });
+            }
+            res.json({ plan });
+        } catch (error) {
+            console.error("Error al desactivar plan", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    },
 }
 export default httpPlanes

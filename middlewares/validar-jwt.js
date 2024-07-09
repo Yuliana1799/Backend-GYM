@@ -5,7 +5,7 @@ const generarJWT = (uid, rol) => {
     return new Promise((resolve, reject) => {
         const payload = { uid, rol};
         jwt.sign(payload, process.env.SECRETORPRIVATEKEY, {
-            expiresIn: "100y"
+            expiresIn: "5h"
         }, (err, token) => {
             if (err) {
                 console.log(err);

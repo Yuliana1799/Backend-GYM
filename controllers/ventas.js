@@ -3,6 +3,17 @@
 import Venta from "../models/ventas.js";
 import Inventario from "../models/inventario.js";
 import helpersVentas from "../helpers/ventas.js"; 
+import Contador from "../models/contador.js";
+
+const obtenerSiguienteCodigo = async () => {
+  const nombreContador = 'ventas';
+  const contador = await Contador.findOneAndUpdate(
+    { nombre: nombreContador },
+    { $inc: { valor: 1 } },
+    { new: true, upsert: true }
+  );
+  return contador.valor;
+};
 const httpVentas = {
     getVentas: async (req, res) => {
         const { busqueda } = req.query;
@@ -21,11 +32,13 @@ const httpVentas = {
             const { valorUnitario, idProducto, cantidad } = req.body;
 
            
-            await helpersVentas.validarIdInventario(idProducto);
+            await helpersVentas.validarIdProducto(idProducto);
             await helpersVentas.validarCantidadDisponible(idProducto, cantidad);
 
+            const codigo = await obtenerSiguienteCodigo();
             const total = valorUnitario * cantidad;
-            const venta = new Venta({ valorUnitario, idProducto, cantidad, total });
+            const venta = new Venta({ valorUnitario, idProducto, cantidad,codigo, total });
+
             await venta.save();
 
             const inventario = await Inventario.findById(idProducto);

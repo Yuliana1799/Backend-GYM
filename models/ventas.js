@@ -10,6 +10,8 @@ const ventasSchema = new mongoose.Schema({
   valorUnitario: { type: Number, require: true },
   cantidad: { type: Number, require: true },
   total: { type: Number, default: "" },
+  codigo: { type: Number, unique: true, required: true },
+
 });
 
 export default mongoose.model("Venta", ventasSchema);

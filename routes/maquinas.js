@@ -6,15 +6,11 @@ import helpersMaquinas from '../helpers/maquinas.js'
 import { validarJWT } from '../middlewares/validar-jwt.js'
 
 const router=Router()
-// router.get("/listar", [validarJWT],httpMaquinas.getMaquinas)
-router.get("/listar",[
-  // validarJWT,
-],httpMaquinas.getMaquinas)
-
+router.get("/listar",[validarJWT],httpMaquinas.getMaquinas)
 router.get("/listarid/:id",httpMaquinas.getMaquinasID)
+router.get("/listaractivadas",httpMaquinas.getMaquinasactivadas)
+router.get("/listardesactivadas",httpMaquinas.getMaquinasDesactivadas)
 
-router.get("/listaractivados",httpMaquinas.getMaquinasactivados)
-router.get("/listardesactivados",httpMaquinas.getMaquinasdesactivados)
 
 router.post("/escribir",[
   check('idSede','Se necesita un mongoId valido').isMongoId(),
@@ -39,12 +35,11 @@ router.put("/activar/activos/:id",[
   validarCampos
 ],httpMaquinas.putMaquinasActivar)
 
-router.put("/desactivar/desactivados/:id",[
+router.put("/desactivar/desactivos/:id",[
   check('id','Se necesita un mongoid valido').isMongoId(),
   check('id').custom(helpersMaquinas.validarIdMaquina),
   validarCampos
 ],httpMaquinas.putMaquinasDesactivar)
-
 
 
 

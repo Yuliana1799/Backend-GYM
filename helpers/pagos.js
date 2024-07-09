@@ -3,24 +3,24 @@ import Cliente from "../models/clientes.js"
 import Plan from "../models/planes.js"
 
 const helpersPagos={
-    validarIdCliente:async (id)=>{
-        const existe = await Cliente.findById(id)
-        if (existe==undefined){
-            throw new Error ("Id no existe")
+    validarIdCliente: async (idCliente) => {
+        const existe = await Cliente.findById(idCliente);
+        if (!existe) {
+          throw new Error("Id no existe");
         }
-    },
-    validarIdPlan:async (id)=>{
-        const existe = await Plan.findById(id)
-        if (existe==undefined){
-            throw new Error ("Id no existe")
+      },
+      validaridPlan: async (idPlan) => {
+        const existe = await Plan.findById(idPlan);
+        if (!existe) {
+          throw new Error("Id no existe");
         }
-    },
-    validarIdPago:async (id)=>{
-        const existe = await Pago.findById(id)
-        if (existe==undefined){
-            throw new Error ("Id no existe")
+      },
+      validarIdPago: async (id) => {
+        const existe = await Pago.findById(id);
+        if (!existe) {
+          throw new Error("Id no existe");
         }
-    },
+      },
     validarFechaPago: (fecha) => {
         if (isNaN(Date.parse(fecha))) {
             throw new Error("Fecha no valida");

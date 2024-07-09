@@ -6,14 +6,12 @@ import helpersSedes from '../helpers/sedes.js'
 import { validarJWT } from '../middlewares/validar-jwt.js'
 
 const router=Router()
-// router.get("/listar", [validarJWT],httpSedes.getSedes)
-router.get("/listar",[
-  // validarJWT,
-],httpSedes.getSedes)
+
+router.get("/listar",[validarJWT],httpSedes.getSedes)
 
 router.get("/listarid/:id",httpSedes.getSedesID)
-router.get("/listaractivados",httpSedes.getSedesactivados)
-router.get("/listardesactivados",httpSedes.getSedesdesactivados)
+router.get("/listaractivados",httpSedes.getSedesactivadas)
+router.get("/listardesactivados",httpSedes.getSedesdesactivadas)
 
 
 router.post("/escribir",[
@@ -31,6 +29,7 @@ router.put("/modificar/:id",[
   check('direccion','La direccion no puede estar vacia.').notEmpty(),
   check('telefono','nueve digitos.').isMobilePhone(),
   check('ciudad','debe ir la ubicacion de la sede.').notEmpty(),
+  // check('codigo','no puede ir vacio el codigo.').notEmpty(),
   check('telefono','nueve digitos.').isLength({min:9}),
   check('horario','escribir el horario de la sede.').isString(),
   validarCampos
@@ -47,7 +46,5 @@ router.put("/desactivar/desactivados/:id",[
   check('id').custom(helpersSedes.validarExistaId),
   validarCampos
 ],httpSedes.putSedesDesactivar)
-
-router.delete("/eliminar", httpSedes.deleteAllSedes);
 
 export default router

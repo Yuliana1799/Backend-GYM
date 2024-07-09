@@ -6,10 +6,9 @@ import helpersIngresos from '../helpers/ingresos.js'
 import { validarJWT } from '../middlewares/validar-jwt.js'
 
 const router=Router()
-// router.get("/listar", [validarJWT],httpIngresos.getIngresosID)
 
-router.get("/listar",[
-],httpIngresos.getIngresos)
+router.get("/listar",[validarJWT],httpIngresos.getIngresos)
+
 
 router.get("/listarid/:id",httpIngresos.getIngresosID)
 
@@ -23,7 +22,7 @@ router.post("/escribir",[
 
 router.put("/modificar/:id",[
     check('id','Se necesita un mongoId valido').isMongoId(),
-    check('id',).custom(helpersIngresos.validarIdSede),
+    check('id','Se necesita un mongoId de ingreso valido').custom(helpersIngresos.validarIdIngreso),
     validarCampos
 ],httpIngresos.putIngresos)
 

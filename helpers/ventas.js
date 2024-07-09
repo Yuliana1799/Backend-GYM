@@ -5,8 +5,8 @@ import Venta from "../models/ventas.js";
 import Inventario from "../models/inventario.js";
 
 const helpersVentas = {
-    validarIdInventario: async (id) => {
-        const existe = await Inventario.findById(id);
+    validarIdProducto: async (idProducto) => {
+        const existe = await Inventario.findById(idProducto);
         if (!existe) {
             throw new Error("Producto no existe");
         }
@@ -17,9 +17,9 @@ const helpersVentas = {
             throw new Error("Id no existe");
         }
     },
-    validarCantidadDisponible: async (id, cantidad) => {
+    validarCantidadDisponible: async (idProducto, cantidad) => {
         try {
-            const inventario = await Inventario.findById(id);
+            const inventario = await Inventario.findById(idProducto);
             if (!inventario) {
                 throw new Error("Producto no encontrado");
             }
@@ -30,7 +30,6 @@ const helpersVentas = {
         } catch (error) {
             throw error;
         }
-    },
-};
-
+    }
+}
 export default helpersVentas;

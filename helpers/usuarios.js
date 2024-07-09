@@ -3,9 +3,9 @@ import Sede from "../models/sedes.js"
 
 
 const helpersUsuarios={
-    validarIdSede:async (id)=>{
-        const existe = await Sede.findById(id)
-        console.log(id);
+    validarIdSede:async (idSede)=>{
+        const existe = await Sede.findById(idSede)
+        console.log(idSede);
         if (existe==undefined){
             throw new Error ("Id no existe1")
         }
@@ -38,11 +38,11 @@ const helpersUsuarios={
             throw new Error("La contraseña debe contener al menos tres letras y tres números");
         }
     },
-Noexisteelcorreo: async(email) => {
-    if(email){
-        const existe = await Usuario.findOne((email))
-        if (!existe) throw new Error("El correo electrónico no es válido");
+    Noexisteelcorreo: async (email) => {
+        if (email) {
+            const existe = await Usuario.findOne({ email: email });
+            if (!existe) throw new Error("El correo electrónico no es válido");
+        }
     }
-},
 }
 export default helpersUsuarios

@@ -1,5 +1,15 @@
 import Maquina from "../models/maquinas.js"
+import ContadorM from "../models/contadorm.js";
 
+const obtenerSiguienteCodigo = async () => {
+    const nombreContador = 'ventas';
+    const contadorm = await ContadorM.findOneAndUpdate(
+      { nombre: nombreContador },
+      { $inc: { valor: 1 } },
+      { new: true, upsert: true }
+    );
+    return contadorm.valor;
+  };
 const httpMaquinas = {
 
     getMaquinas: async (req, res) => {
@@ -19,19 +29,30 @@ const httpMaquinas = {
         const maquina = await Maquina.findById(id).populate('idSede')
         res.json({ maquina })
     },
-
-    getMaquinasactivados: async (req, res) => {
-        const activados = await Maquina.find({estado: 1})
-        res.json({ activados })
+    getMaquinasDesactivadas: async (req, res) => {
+        try {
+        const desactivadas = await Maquina.find({ estado: 0 })
+        res.json({ desactivadas })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener maquinas desactivadas' });
+    }
+    },
+    getMaquinasactivadas: async (req, res) => {
+        try {
+        const activadas = await Maquina.find({ estado: 1 })
+        res.json({ activadas })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener maquinas activadas' });
+    }
     },
 
-    getMaquinasdesactivados: async (req, res) => {
-        const desactivados = await Maquina.find({estado: 0})
-        res.json({ desactivados })
-    },
     postMaquinas: async (req, res) => {
         try {
-        const {idSede,codigo,descripcion,estado} = req.body
+        const {idSede,descripcion,estado} = req.body
+        const codigo = await obtenerSiguienteCodigo();
+
         const maquina = new Maquina({idSede,codigo,descripcion,estado})
         await maquina.save()
         res.json({ maquina })
@@ -50,18 +71,32 @@ const httpMaquinas = {
     },
 
     putMaquinasActivar: async (req, res) => {
-        const { id } = req.params
-        const maquina = await Maquina.findByIdAndUpdate(id, { estado: 1 }, { new: true })
-        res.json({ maquina})
+        const { id } = req.params;
+        try {
+            const maquina = await Maquina.findByIdAndUpdate(id, { estado: 1 }, { new: true });
+            if (!maquina) {
+                return res.status(404).json({ error: "maquina no encontrado" });
+            }
+            res.json({ maquina });
+        } catch (error) {
+            console.error("Error al activar maquina", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     },
 
-   
-
     putMaquinasDesactivar: async (req, res) => {
-        const { id } = req.params
-        const maquina = await Maquina.findByIdAndUpdate(id, { estado: 0 }, { new: true })
-        res.json({ maquina })
-    }
+        const { id } = req.params;
+        try {
+            const maquina = await Maquina.findByIdAndUpdate(id, { estado: 0 }, { new: true });
+            if (!maquina) {
+                return res.status(404).json({ error: "maquina no encontrado" });
+            }
+            res.json({ maquina });
+        } catch (error) {
+            console.error("Error al desactivar maquina", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    },
 
 }
 export default httpMaquinas
