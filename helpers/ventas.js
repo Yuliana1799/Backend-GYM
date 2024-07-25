@@ -30,6 +30,17 @@ const helpersVentas = {
         } catch (error) {
             throw error;
         }
+    },
+    ajustarInventario: async (idProducto, diferencia) => {
+        const inventario = await Inventario.findById(idProducto);
+        if (!inventario) {
+            throw new Error("Producto no encontrado");
+        }
+        inventario.cantidad -= diferencia;
+        if (inventario.cantidad < 0) {
+            throw new Error("Cantidad en inventario no puede ser negativa");
+        }
+        await inventario.save();
     }
 }
 export default helpersVentas;

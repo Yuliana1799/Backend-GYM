@@ -55,15 +55,28 @@ const httpVentas = {
     putVentas: async (req, res) => {
         try {
             const { id } = req.params;
-            const { ...resto } = req.body;
+            const { valorUnitario, idProducto, cantidad } = req.body;
 
-            const venta = await Venta.findByIdAndUpdate(id, resto, { new: true });
-            res.json({ venta });
+            await helpersVentas.validarIdProducto(idProducto);
+            await helpersVentas.validarCantidadDisponible(idProducto, cantidad);
+
+            const ventaOriginal = await Venta.findById(id);
+            if (!ventaOriginal) {
+                throw new Error("Venta no encontrada");
+            }
+
+            const diferencia = cantidad - ventaOriginal.cantidad;
+
+            const ventaActualizada = await Venta.findByIdAndUpdate(id, { valorUnitario, idProducto, cantidad }, { new: true });
+
+            await helpersVentas.ajustarInventario(idProducto, diferencia);
+
+            res.json({ venta: ventaActualizada });
         } catch (error) {
             console.error("Error updating ventas:", error);
             res.status(400).json({ error: error.message || "No se pudo actualizar la venta" });
         }
-    },
+    }
 };
 
 export default httpVentas;

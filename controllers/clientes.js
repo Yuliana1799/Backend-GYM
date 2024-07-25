@@ -38,17 +38,26 @@ const httpClientes = {
         }
     },
 
-        getClientesPorPlan: async (req, res) => {
+        // getClientesPorPlan: async (req, res) => {
+        //     try {
+        //         const { idPlan } = req.params; 
+        //         const clientes = await Cliente.find({ idPlan:  id }); 
+        //         res.json({ clientes });
+        //     } catch (error) {
+        //         console.error("Error al obtener clientes por ID de plan:", error);
+        //         res.status(500).json({ error: "Error interno del servidor" });
+        //     }
+        // },
+        getClientesPorPlan :async (req, res) => {
             try {
-                const { idPlan } = req.params; 
-                const clientes = await Cliente.find({ idPlan }); 
+                const { id } = req.params; 
+                const clientes = await Cliente.find({ idPlan: id }); 
                 res.json({ clientes });
             } catch (error) {
                 console.error("Error al obtener clientes por ID de plan:", error);
                 res.status(500).json({ error: "Error interno del servidor" });
             }
         },
-
 
     getClientesPorCumpleaños: async (req, res) => {
         try {
