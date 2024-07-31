@@ -44,7 +44,12 @@ router.put("/modificar/seguimiento/:id",[
   validarCampos
 ],httpClientes.putClienteSeguimiento)
 
-
+router.put("/editar/seguimiento/:id/:seguimientoId", [
+  check('id','Se necesita un mongoid valido').isMongoId(),
+  check('seguimientoId','Se necesita un mongoid valido').isMongoId(),
+  check('id').custom(helpersClientes.validarExistaIdcliente),
+  validarCampos
+],httpClientes.putEditaSeguimiento);
 
 router.put("/activar/activados/:id",[
     check('id','Se necesita un mongoid valido').isMongoId(),

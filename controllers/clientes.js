@@ -194,6 +194,59 @@ const httpClientes = {
             res.status(500).json({ error: "Error interno del servidor" });
         }
     },
+    putEditaSeguimiento: async (req, res) => {
+        const { id, seguimientoId } = req.params;
+        const { seguimiento } = req.body;
+      
+        console.log("Datos recibidos:", seguimiento);
+      
+        if (!seguimiento || typeof seguimiento !== 'object') {
+          return res.status(400).json({ error: "Formato de seguimiento incorrecto" });
+        }
+      
+        const { peso, altura, brazo, edad } = seguimiento;
+        console.log("Peso recibido:", peso);
+        console.log("Altura recibida:", altura);
+      
+        try {
+          const cliente = await Cliente.findById(id);
+          if (!cliente) {
+            return res.status(404).json({ error: "Cliente no encontrado" });
+          }
+      
+          const seguimientoItem = cliente.seguimiento.id(seguimientoId);
+          if (!seguimientoItem) {
+            return res.status(404).json({ error: "Seguimiento no encontrado" });
+          }
+      
+          if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
+            console.log("Valores de peso o altura no válidos:", { peso, altura });
+            return res.status(400).json({ error: "Valores de peso o altura no válidos" });
+          }
+      
+          const alturaEnMetros = altura / 100;
+          const imc = peso / (alturaEnMetros * alturaEnMetros);
+      
+          if (isNaN(imc)) {
+            console.log("Error en el cálculo del IMC:", { imc });
+            return res.status(400).json({ error: "Error en el cálculo del IMC" });
+          }
+      
+          seguimientoItem.peso = peso;
+          seguimientoItem.altura = altura;
+          seguimientoItem.brazo = brazo;
+          seguimientoItem.edad = edad;
+          seguimientoItem.imc = imc.toFixed(2);
+      
+          await cliente.save();
+      
+          res.status(200).json({ message: "Seguimiento actualizado", cliente });
+        } catch (error) {
+          console.error("Error al actualizar el seguimiento", error);
+          res.status(500).json({ error: "Error interno del servidor" });
+        }
+      },           
+
     actualizarEstados: async () => {
         try {
             const now = new Date();
