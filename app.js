@@ -13,7 +13,13 @@ import planes from "./routes/planes.js"
 import sedes from "./routes/sedes.js"
 import usuarios from "./routes/usuarios.js"
 import ventas from "./routes/ventas.js"
+import cron from 'node-cron'
 import cors from 'cors'
+
+import { sendEmailItemsWithoutExpirationDateItems, sendEmailWhenExpirationItems } from './helpers/email.js'
+import Inventario from "./models/inventario.js"
+import Usuario from "./models/usuarios.js"
+
 const app = express()
 app.use(cors())
 app.use(express.static('public'))
@@ -33,4 +39,29 @@ app.use("/api/ventas",ventas)
 app.listen(process.env.PORT,()=>{
     console.log(`Servidor escuchando en el puerto ${process.env.PORT}`);
     dbConexion()
+})
+
+cron.schedule('0 10 * * *', async () => {
+    const thirtyDaysFromNow = new Date();
+
+    thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+
+    const expirationitems = await Inventario.find({ expirationDate: { $lte: thirtyDaysFromNow } })
+
+    const itemsWithoutExpirationDate = await Inventario.find({ expirationDate: { $exists: false } })
+
+    const adminUsers = await Usuario.find({
+        rol: 'Administrador'
+    })
+    
+    await sendEmailItemsWithoutExpirationDateItems('jcgrrincon@gmail.com', itemsWithoutExpirationDate)
+
+    await sendEmailWhenExpirationItems('jcgrrincon@gmail.com', expirationitems)
+    
+    for (const admin of adminUsers) {
+        await sendEmailItemsWithoutExpirationDateItems(admin.email, itemsWithoutExpirationDate)
+
+        await sendEmailWhenExpirationItems(admin.email, expirationitems)
+    }
+
 })
