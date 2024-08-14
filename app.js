@@ -13,6 +13,7 @@ import planes from "./routes/planes.js"
 import sedes from "./routes/sedes.js"
 import usuarios from "./routes/usuarios.js"
 import ventas from "./routes/ventas.js"
+import proveedores from './routes/proveedores.js'
 import cron from 'node-cron'
 import cors from 'cors'
 
@@ -34,6 +35,7 @@ app.use("/api/planes",planes)
 app.use("/api/sedes",sedes)
 app.use("/api/usuarios",usuarios)
 app.use("/api/ventas",ventas)
+app.use('/api', proveedores)
 
 
 app.listen(process.env.PORT,()=>{
