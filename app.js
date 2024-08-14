@@ -56,10 +56,6 @@ cron.schedule('0 10 * * *', async () => {
         rol: 'Administrador'
     })
     
-    await sendEmailItemsWithoutExpirationDateItems('jcgrrincon@gmail.com', itemsWithoutExpirationDate)
-
-    await sendEmailWhenExpirationItems('jcgrrincon@gmail.com', expirationitems)
-    
     for (const admin of adminUsers) {
         await sendEmailItemsWithoutExpirationDateItems(admin.email, itemsWithoutExpirationDate)
 
