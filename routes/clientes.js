@@ -23,7 +23,7 @@ router.post("/escribir",[
     check('idPlan','Se necesita un mongoid valido').isMongoId(),
     check('idPlan').custom(helpersClientes.validaridPlan),
     check('telefono', 'minimo 9 caracteres.').isLength({min:9}),
-    // check('telefono').custom(helpersClientes.validarTelefono),
+    check('documento').custom(helpersClientes.validarDocumentoUnico),
     validarCampos
 ],httpClientes.postClientes)
 
@@ -31,6 +31,7 @@ router.post("/escribir",[
 router.put("/modificar/:id",[    
     check('nombre','El documento no puede estar vacio.').notEmpty(),
     check('observaciones','las observaciones no puede estar vacias.').notEmpty(),
+  check("documento").custom((documento, { req }) => helpersClientes.documentoExisteExceptoPropio(documento, req.params.id)),
     check('documento','Minimo 6 caracteres.').isLength({min:6}),
     check('telefono', 'minimo 9 caracteres.').isLength({min:9}),
     check('telefono', 'en digitos.').isNumeric().notEmpty(),

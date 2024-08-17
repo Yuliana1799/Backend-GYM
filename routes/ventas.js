@@ -13,7 +13,7 @@ const router = Router();
 router.get("/listar",[validarJWT],httpVentas.getVentas)
 
 router.get("/listarid/:id",httpVentas.getVentasID)
-
+router.get("/listarporproducto/:id",httpVentas.getVentasporproducto)
 
 router.post("/escribir", [
     check('idProducto', 'Debe ser un ID de Mongo válido').isMongoId(),

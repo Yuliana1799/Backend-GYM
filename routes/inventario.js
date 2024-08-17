@@ -18,6 +18,9 @@ router.post("/escribir",[
     check('descripcion','Minimo 2 caracteres.').isLength({min:2}),
     check('valor','solo numeros').isNumeric(),
     check('cantidad','solo numeros').isNumeric(),
+    check('idProveedor', 'Debe ser un ID de Mongo válido').isMongoId(),
+    check('idProveedor').custom(helpersInventario.validaridProveedor),
+    // check('expirationDate', 'Fecha invalida').isDate(),
     validarCampos
 ],httpInventario.postInventario)
 
@@ -25,10 +28,13 @@ router.put("/modificar/:id",[
     check('id','Se necesita un mongoid valido').isMongoId(),
     check('id').custom(helpersInventario.validarExistaId),    
     check('descripcion','la descripcion no puede estar vacio.').notEmpty(),
-check('descripcion','Minimo 4 caracteres.').isLength({min:6}),
-check('valor','solo numeros').isNumeric(),
-check('cantidad','solo numeros').isNumeric(),
-validarCampos
+    check('descripcion','Minimo 4 caracteres.').isLength({min:6}),
+    check('valor','solo numeros').isNumeric(),
+    check('idProveedor', 'Debe ser un ID de Mongo válido').isMongoId(),
+    check('idProveedor').custom(helpersInventario.validaridProveedor),
+    check('cantidad','solo numeros').isNumeric(),
+    // check('expirationDate', 'Fecha invalida').isDate(),
+    validarCampos
 ],httpInventario.putInventario)
 
 router.put("/activar/activados/:id",[

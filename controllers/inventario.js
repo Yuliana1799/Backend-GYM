@@ -53,10 +53,10 @@ getInventarioID: async (req, res) => {
 
     postInventario: async (req, res) => {
         try {
-        const {descripcion,valor,cantidad, estado} = req.body
+        const {idProveedor, descripcion,valor,cantidad, estado, expirationDate} = req.body
         const codigo = await obtenerSiguienteCodigo();
 
-        const inventario = new Inventario({codigo,descripcion,valor,cantidad, estado})
+        const inventario = new Inventario({codigo,idProveedor, descripcion,valor,cantidad, estado, expirationDate})
         await inventario.save()
         res.json({ inventario })
     }catch (error) {

@@ -43,6 +43,19 @@ const helpersUsuarios={
             const existe = await Usuario.findOne({ email: email });
             if (!existe) throw new Error("El correo electrónico no es válido");
         }
-    }
+    },
+    emailExisteExceptoPropio: async (email, id) => {
+        const existe = await Usuario.findOne({ email, _id: { $ne: id } });
+        if (existe) {
+            throw new Error("El correo electrónico ya está registrado por otro usuario");
+        }
+    },
+
+    emailExiste: async (email) => {
+        const existe = await Usuario.findOne({ email });
+        if (existe) {
+            throw new Error("El correo electrónico ya está registrado");
+        }
+    },    
 }
 export default helpersUsuarios

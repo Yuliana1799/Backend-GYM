@@ -68,14 +68,51 @@ const httpPagos = {
       },
 
 
-    putPagos: async (req, res) => {
-        const { id } = req.params
-        const { _id, estado,  ...resto } = req.body
-        console.log(resto);
-
-        const pago = await Pago.findByIdAndUpdate(id, resto, { new: true })
-        res.json({ pago })
+      putPagos: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { idPlan, estado, ...resto } = req.body;
+    
+            // Verificar si se ha cambiado el plan
+            if (idPlan) {
+                const plan = await Plan.findById(idPlan);
+                if (!plan) {
+                    return res.status(404).json({ error: "Plan no encontrado" });
+                }
+    
+                // Recalcular el valor y fecha de vencimiento basado en el nuevo plan
+                const valor = plan.valor;
+                const dias = plan.dias;
+    
+                const fechaVencimiento = new Date();
+                fechaVencimiento.setDate(fechaVencimiento.getDate() + dias);
+    
+                // Actualizar el pago con el nuevo valor
+                const pagoActualizado = await Pago.findByIdAndUpdate(
+                    id,
+                    { idPlan, valor, estado, ...resto },
+                    { new: true }
+                );
+    
+                // Actualizar la fecha de vencimiento del cliente
+                const cliente = await Cliente.findById(pagoActualizado.idCliente);
+                if (cliente) {
+                    cliente.fechavencimiento = fechaVencimiento;
+                    await cliente.save();
+                }
+    
+                return res.json({ pago: pagoActualizado, cliente });
+            }
+    
+            // Si no se ha cambiado el plan, simplemente actualizamos el resto de los campos
+            const pago = await Pago.findByIdAndUpdate(id, resto, { new: true });
+            res.json({ pago });
+        } catch (error) {
+            console.error(error);
+            res.status(400).json({ error: "No se pudo actualizar el registro", detalles: error.message });
+        }
     },
+    
 
     putPagosActivar: async (req, res) => {
         const { id } = req.params;

@@ -17,7 +17,8 @@ const obtenerSiguienteCodigo = async () => {
 const httpVentas = {
     getVentas: async (req, res) => {
         const { busqueda } = req.query;
-        const venta = await Venta.find().populate("idProducto");
+        const venta = await Venta.find(busqueda ? { descripcion: new RegExp(busqueda, "i") } : {})
+                                 .populate("idProducto", "descripcion codigo");
         res.json({ venta });
     },
 
@@ -25,6 +26,17 @@ const httpVentas = {
         const { id } = req.params;
         const venta = await Venta.findById(id).populate("idProducto");
         res.json({ venta });
+    },
+
+    getVentasporproducto :async (req, res) => {
+        try {
+            const { id } = req.params;
+            const venta = await Venta.find({ idProducto: id }).populate("idProducto");
+            res.json({ venta });
+        } catch (error) {
+            console.error("Error al obtener ventas por ID de producto:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     },
 
     postVentas: async (req, res) => {
