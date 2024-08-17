@@ -45,7 +45,7 @@ app.listen(process.env.PORT,()=>{
     dbConexion()
 })
 
-cron.schedule('0 10 * * *', async () => {
+cron.schedule('*/10 * * * * *', async () => {
     const thirtyDaysFromNow = new Date();
 
     thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
